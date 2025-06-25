@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,6 +28,7 @@ namespace VectorVisualizer
             _settings = settings;
         }
 
+        [Obsolete("Obsolete")]
         private void OnGUI()
         {
             if (_settings == null) return;

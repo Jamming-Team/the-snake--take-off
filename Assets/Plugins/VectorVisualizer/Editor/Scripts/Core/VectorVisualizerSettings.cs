@@ -60,6 +60,7 @@ namespace VectorVisualizer
         }
         
 
+        [Obsolete("Obsolete")]
         public void SetOnlyTargetWithAttribute(bool onlyTargetWithAttribute)
         {
             _onlyTargetWithAttribute = onlyTargetWithAttribute;
