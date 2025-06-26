@@ -14,6 +14,23 @@ namespace XTools {
         const string SCENE_SERVICE_LOCATOR_NAME = "Service Locator [Scene]";
 
         readonly ServiceManager _services = new();
+        
+        public static ServiceLocator Global {
+            get {
+                if (_global != null) return _global;
+
+                //bootstrap or initialize the new instance of global as necessary
+                if (FindFirstObjectByType<ServiceLocatorGlobalBootstrapper>() is { } found) {
+                    found.BootstrapOnDemand();
+                    return _global;
+                }
+
+                var container = new GameObject(GLOBAL_SERVICE_LOCATOR_NAME, typeof(ServiceLocator));
+                container.AddComponent<ServiceLocatorGlobalBootstrapper>().BootstrapOnDemand();
+
+                return _global;
+            }
+        }
 
         internal void ConfigureAsGlobal(bool dontDestroyOnLoad) {
             if (_global == this) {
@@ -39,22 +56,7 @@ namespace XTools {
             _sceneContainers.Add(scene, this);
         }
 
-        public static ServiceLocator global {
-            get {
-                if (_global != null) return _global;
 
-                //bootstrap or initialize the new instance of global as necessary
-                if (FindFirstObjectByType<ServiceLocatorGlobalBootstrapper>() is { } found) {
-                    found.BootstrapOnDemand();
-                    return _global;
-                }
-
-                var container = new GameObject(GLOBAL_SERVICE_LOCATOR_NAME, typeof(ServiceLocator));
-                container.AddComponent<ServiceLocatorGlobalBootstrapper>().BootstrapOnDemand();
-
-                return _global;
-            }
-        }
 
         static List<GameObject> _tmpSceneGameObjects;
 
@@ -79,12 +81,12 @@ namespace XTools {
             }
 
             // If we weren't able to find any scene level ServiceLocator
-            return global;
+            return Global;
         }
 
         // When it's right on the actual object we are looking for
         public static ServiceLocator For(MonoBehaviour mb) {
-            return mb.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(mb) ?? global;
+            return mb.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(mb) ?? Global;
         }
 
         public ServiceLocator Register<T>(T service) {
@@ -113,8 +115,8 @@ namespace XTools {
         }
 
         bool TryGetNextInHierarchy(out ServiceLocator container) {
-            if (this == global) {
-                container = global;
+            if (this == Global) {
+                container = Global;
                 return false;
             }
 
@@ -125,7 +127,8 @@ namespace XTools {
         void OnDestroy() {
             if (this == _global) {
                 _global = null;
-            } else if (_sceneContainers.ContainsValue(this)) {
+            }
+            else if (_sceneContainers.ContainsValue(this)) {
                 _sceneContainers.Remove(gameObject.scene);
             }
         }

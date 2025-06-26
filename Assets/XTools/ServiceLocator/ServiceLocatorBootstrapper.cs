@@ -4,7 +4,7 @@ using UnityEngine;
 namespace XTools {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ServiceLocator))]
-    public abstract class ServiceLocatorBootstrapper : MonoBehaviour {
+    internal abstract class ServiceLocatorBootstrapper : MonoBehaviour {
         ServiceLocator _container;
         internal ServiceLocator container => _container.OrNull() ?? (_container = GetComponent<ServiceLocator>());
 
@@ -22,7 +22,7 @@ namespace XTools {
     }
 
     [AddComponentMenu("Patterns/IoS_ServiceLocator.GA/ServiceLocator Global")]
-    public class ServiceLocatorGlobalBootstrapper : ServiceLocatorBootstrapper {
+    internal class ServiceLocatorGlobalBootstrapper : ServiceLocatorBootstrapper {
         [SerializeField] bool _dontDestroyOnLoad = true;
 
         protected override void Bootstrap() {
@@ -31,7 +31,7 @@ namespace XTools {
     }
 
     [AddComponentMenu("Patterns/IoS_ServiceLocator.GA/ServiceLocator Scene")]
-    public class ServiceLocatorSceneBootstrapper : ServiceLocatorBootstrapper {
+    internal class ServiceLocatorSceneBootstrapper : ServiceLocatorBootstrapper {
         protected override void Bootstrap() {
             container.ConfigureForScene();
         }

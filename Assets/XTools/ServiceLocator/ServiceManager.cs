@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace XTools {
-    public class ServiceManager {
+    internal class ServiceManager {
         readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
         public IEnumerable<object> registeredServices => _services.Values;
 
@@ -34,7 +34,7 @@ namespace XTools {
         public ServiceManager Register<T>(T service) {
             Type type = typeof(T);
 
-            if (_services.TryAdd(type, service)) {
+            if (!_services.TryAdd(type, service)) {
                 Debug.LogError("Service already registered: " + type);
             }
 
