@@ -104,7 +104,7 @@ Material:
     - _GlossyReflections: 0
     - _ISOVERLAY: 1
     - _Metallic: 0
-    - _NormalThreshold: 0.01
+    - _NormalThreshold: 0.2
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
