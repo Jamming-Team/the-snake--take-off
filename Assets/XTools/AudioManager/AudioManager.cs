@@ -14,6 +14,8 @@ namespace XTools {
         AudioData _data;
         MusicModel _musicModel;
         bool _initialized = false;
+        EventBinding<DataChanged> _dataChangedBinding;
+
 
         void Start() {
             ServiceLocator.For(this).Get(out IVisitorDataSupplier dataManager);
@@ -27,8 +29,11 @@ namespace XTools {
             // Subscribe the data event
 
             _initialized = true;
-
+            
             // PlayMusic(MusicBundleType.MainMenu, true);
+            
+            _dataChangedBinding = new EventBinding<DataChanged>(AdjustMixerVolume);
+            EventBus<DataChanged>.Register(_dataChangedBinding);
         }
 
         void OnDestroy() {
