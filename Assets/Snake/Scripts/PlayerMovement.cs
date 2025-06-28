@@ -2,24 +2,31 @@ using UnityEngine;
 
 namespace Snake
 {
+    [RequireComponent(typeof(CharacterController))]
     public class PlayerMovement : MonoBehaviour
     {
-         CharacterController controller;
+         CharacterController _controller;
          [SerializeField] float speed = 12f;
          [SerializeField] float gravity = -9.81f;
          [SerializeField] float jumpHeight = 3f;
 
-         Transform groundCheck;
+         [SerializeField] Transform groundCheck;
          [SerializeField] float groundDistance = 0.4f;
-         LayerMask groundMask;
+         [SerializeField] LayerMask groundMask;
+         
          Vector3 velocity;
          bool isGrounded;
+         
+         void Start()
+         {
+             _controller = GetComponent<CharacterController>();
+         }
 
          void Update()
          {
              isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-             if (isGrounded & velocity.y < 0)
+             if (isGrounded && velocity.y < 0)
              {
                  velocity.y = -2f;
              }
@@ -28,7 +35,7 @@ namespace Snake
              float z = Input.GetAxis("Vertical");
              
              Vector3 move = transform.right * x + transform.forward * z;
-             controller.Move(move * speed * Time.deltaTime);
+             _controller.Move(move * speed * Time.deltaTime);
 
              if (Input.GetButtonDown("Jump") && isGrounded)
              {
@@ -36,7 +43,7 @@ namespace Snake
              }
 
              velocity.y += gravity * Time.deltaTime;
-             controller.Move(velocity * Time.deltaTime);
+             _controller.Move(velocity * Time.deltaTime);
          }
     }
 }
