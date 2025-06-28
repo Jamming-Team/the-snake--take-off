@@ -5,7 +5,7 @@ using UnityEngine.Pool;
 using UnityEngine.Serialization;
 
 namespace XTools {
-    public class SoundManager : MonoBehaviour {
+    public class SoundModel : MonoBehaviour {
         public readonly LinkedList<SoundEmitter> frequentSoundEmitters = new();
         
         public AudioMixer mixer;

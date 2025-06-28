@@ -1,8 +1,12 @@
 using UnityEngine;
 
 namespace XTools {
-    public abstract class DataManager<TData> : IVisitor where TData : GameDataSOBase {
+    public class DataManagerBase<TData> : MonoBehaviour, IVisitor where TData : GameDataSOBase {
         [SerializeField] TData _gameData;
+
+        void Awake() {
+            ServiceLocator.Global.Register(this);
+        }
 
         public void TrySupply(IVisitable requester) {
             requester.Accept(this);
@@ -22,5 +26,9 @@ namespace XTools {
             // noop (== `no op` == `no operation`)
             Debug.Log("DataManager.DefaultVisit");
         }
+
+        void Visit(AudioManager requester) {
+            requester.SetData(_gameData.audio);
+        } 
     }
 }

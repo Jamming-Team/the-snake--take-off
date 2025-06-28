@@ -10,14 +10,14 @@ namespace XTools {
 
         AudioSource _audioSource;
         Coroutine _playingCoroutine;
-        SoundManager _manager;
+        SoundModel _model;
 
         void Awake() {
             _audioSource = gameObject.GetOrAdd<AudioSource>();
         }
 
-        public void Initialize(SoundData data, SoundManager manager) {
-            _manager = manager;
+        public void Initialize(SoundData data, SoundModel model) {
+            _model = model;
 
             soundData = data;
             // audioSource.clip = data.clip;
@@ -70,7 +70,7 @@ namespace XTools {
             }
 
             _audioSource.Stop();
-            _manager.ReturnToPool(this);
+            _model.ReturnToPool(this);
         }
 
         public void WithRandomPitch(float min = -0.1f, float max = 0.1f) {

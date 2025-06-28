@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace XTools {
-    public class MusicManager {
+    internal class MusicModel {
         float _fading;
         AudioSource _current;
         AudioSource _previous;
@@ -15,7 +15,7 @@ namespace XTools {
         readonly MusicSourcesPair _musicSourcesPair;
         bool _sourcesAreReversed = true;
 
-        public MusicManager(MusicData musicData, MusicSourcesPair musicSourcesPair) {
+        public MusicModel(MusicData musicData, MusicSourcesPair musicSourcesPair) {
             _musicData = musicData;
             _musicSourcesPair = musicSourcesPair;
         }

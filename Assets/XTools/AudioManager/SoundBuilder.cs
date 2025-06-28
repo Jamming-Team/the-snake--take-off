@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace XTools {
     public class SoundBuilder {
-        readonly SoundManager _soundManager;
+        readonly SoundModel _soundModel;
         Vector3 _position = Vector3.zero;
         bool _randomPitch;
 
-        public SoundBuilder(SoundManager soundManager) {
-            _soundManager = soundManager;
+        public SoundBuilder(SoundModel soundModel) {
+            _soundModel = soundModel;
         }
 
         public SoundBuilder WithPosition(Vector3 position) {
@@ -26,16 +26,16 @@ namespace XTools {
                 return null;
             }
 
-            if (!_soundManager.CanPlaySound(soundData)) return null;
+            if (!_soundModel.CanPlaySound(soundData)) return null;
 
-            SoundEmitter soundEmitter = _soundManager.Get();
-            soundEmitter.Initialize(soundData, _soundManager);
+            SoundEmitter soundEmitter = _soundModel.Get();
+            soundEmitter.Initialize(soundData, _soundModel);
             soundEmitter.transform.position = _position;
-            soundEmitter.transform.parent = _soundManager.transform;
+            soundEmitter.transform.parent = _soundModel.transform;
 
             if (_randomPitch) soundEmitter.WithRandomPitch();
 
-            if (soundData.frequentSound) soundEmitter.node = _soundManager.frequentSoundEmitters.AddLast(soundEmitter);
+            if (soundData.frequentSound) soundEmitter.node = _soundModel.frequentSoundEmitters.AddLast(soundEmitter);
 
             soundEmitter.Play();
 
