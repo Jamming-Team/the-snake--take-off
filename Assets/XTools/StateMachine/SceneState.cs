@@ -7,11 +7,13 @@ namespace XTools {
         [SerializeField] protected List<GameObject> _views;
 
         EventBinding<UIButtonPressed> _UIButtonPressedBinding;
+        protected SceneLoader _sceneLoader;
         
         public override void Init(MonoBehaviour context) {
             base.Init(context);
             SetViewsVisibility(false);
             _UIButtonPressedBinding = new EventBinding<UIButtonPressed>(OnUIButtonPressed);
+            ServiceLocator.For(this).Get(out _sceneLoader);
         }
 
         protected override void OnEnter() {

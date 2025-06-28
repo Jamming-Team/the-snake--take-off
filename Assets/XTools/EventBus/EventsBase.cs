@@ -19,7 +19,7 @@ namespace XTools {
 
         public enum UIButtons {
             Back,
-            Continue,
+            Pause,
             LoadMainMenu,
             LoadGameplay,
             Settings
