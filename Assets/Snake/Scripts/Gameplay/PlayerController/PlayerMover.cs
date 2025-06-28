@@ -4,85 +4,111 @@ using UnityEngine;
 namespace Snake {
     [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
     public class PlayerMover : MonoBehaviour {
-        #region Fields
-        [Header("Collider Settings")] [Range(0f, 1f)] [SerializeField]
-        float _stepHeightRatio = 0.1f;
-
-        [SerializeField] float _colliderHeight = 2f;
-        [SerializeField] float _colliderThickness = 1f;
-        [SerializeField] Vector3 _colliderOffset = Vector3.zero;
+       #region Fields
+        [Header("Collider Settings:")]
+        [Range(0f, 1f)] [SerializeField] float stepHeightRatio = 0.1f;
+        [SerializeField] float colliderHeight = 2f;
+        [SerializeField] float colliderThickness = 1f;
+        [SerializeField] Vector3 colliderOffset = Vector3.zero;
         
-        Rigidbody _rb;
-        Transform _tr;
-        CapsuleCollider _col;
-        RaycastSensor _sensor;
-
-        bool _isGrounded;
-        float _baseSensorRange;
-        Vector3 _currentGroundAdjustmentVelocity; // Velocity to adjust player position to maintain ground contact
-        int _currentLayer;
-
-        [Header("Sensor Settings")] [SerializeField]
-        bool _isInDebugMode;
-        bool _isUsingExtendedSensorRange = true; // Use extended range for smother ground transitions
+        Rigidbody rb;
+        Transform tr;
+        CapsuleCollider col;
+        RaycastSensor sensor;
+        
+        bool isGrounded;
+        float baseSensorRange;
+        Vector3 currentGroundAdjustmentVelocity; // Velocity to adjust player position to maintain ground contact
+        int currentLayer;
+        
+        [Header("Sensor Settings:")]
+        [SerializeField] bool isInDebugMode;
+        bool isUsingExtendedSensorRange = true; // Use extended range for smoother ground transitions
         #endregion
-
 
         void Awake() {
             Setup();
             RecalculateColliderDimensions();
         }
 
-        // So we can recalibrate in the editor (while in Play Mode?)
         void OnValidate() {
             if (gameObject.activeInHierarchy) {
                 RecalculateColliderDimensions();
             }
         }
+        
+        void LateUpdate() {
+            if (isInDebugMode) {
+                sensor.DrawDebug();
+            }
+        }
 
-        public void CheckForGrounder() {
-            if (_currentLayer != gameObject.layer) {
+        public void CheckForGround() {
+            if (currentLayer != gameObject.layer) {
                 RecalculateSensorLayerMask();
             }
             
-            _currentGroundAdjustmentVelocity = Vector3.zero;
-            _sensor.castLength = _isUsingExtendedSensorRange
-                ? _baseSensorRange + _colliderHeight * _tr.localScale.x * _stepHeightRatio
-                : _baseSensorRange;
-            _sensor.Cast();
-
-            _isGrounded = _sensor.HasDetectedHit();
-            if (!_isGrounded) return;
+            currentGroundAdjustmentVelocity = Vector3.zero;
+            sensor.castLength = isUsingExtendedSensorRange 
+                ? baseSensorRange + colliderHeight * tr.localScale.x * stepHeightRatio
+                : baseSensorRange;
+            sensor.Cast();
             
-            float distance = _sensor.GetDistance();
-            float upperLimit = _colliderHeight * _tr.localScale.x * (1f - _stepHeightRatio) * 0.5f;
-            float middle = upperLimit + _colliderHeight * _tr.localScale.x * _stepHeightRatio;
+            isGrounded = sensor.HasDetectedHit();
+            if (!isGrounded) return;
+            
+            float distance = sensor.GetDistance();
+            float upperLimit = colliderHeight * tr.localScale.x * (1f - stepHeightRatio) * 0.5f;
+            float middle = upperLimit + colliderHeight * tr.localScale.x * stepHeightRatio;
             float distanceToGo = middle - distance;
             
-            _currentGroundAdjustmentVelocity = _tr.up * (distanceToGo / Time.fixedDeltaTime);
+            currentGroundAdjustmentVelocity = tr.up * (distanceToGo / Time.fixedDeltaTime);
         }
         
-        public bool IsGrounded() => _isGrounded;
-        public Vector3 GetGroundNormal() => _sensor.GetNormal();
+        public bool IsGrounded() => isGrounded;
+        public Vector3 GetGroundNormal() => sensor.GetNormal();
         
-        public void SetVelocity(Vector3 velocity) => _rb.linearVelocity = velocity + _currentGroundAdjustmentVelocity;
-        public void SetExtendSensorRange(bool isExtended) => _isUsingExtendedSensorRange = isExtended;
-        
+        // NOTE: Older versions of Unity use rb.velocity instead
+        public void SetVelocity(Vector3 velocity) => rb.linearVelocity = velocity + currentGroundAdjustmentVelocity;
+        public void SetExtendSensorRange(bool isExtended) => isUsingExtendedSensorRange = isExtended;
+
         void Setup() {
-            _tr = transform;
-            _rb = GetComponent<Rigidbody>();
-            _col = GetComponent<CapsuleCollider>();
+            tr = transform;
+            rb = GetComponent<Rigidbody>();
+            col = GetComponent<CapsuleCollider>();
             
-            // As we control those things on our own
-            _rb.freezeRotation = true;
-            _rb.useGravity = false;
-            
+            rb.freezeRotation = true;
+            rb.useGravity = false;
         }
-        
-        void LateUpdate() {
-            if (_isInDebugMode) {
-                _sensor.DrawDebug();
+
+        void RecalculateColliderDimensions() {
+            if (col == null) {
+                Setup();
             }
+            
+            col.height = colliderHeight * (1f - stepHeightRatio);
+            col.radius = colliderThickness / 2f;
+            col.center = colliderOffset * colliderHeight + new Vector3(0f, stepHeightRatio * col.height / 2f, 0f);
+
+            if (col.height / 2f < col.radius) {
+                col.radius = col.height / 2f;
+            }
+            
+            RecalibrateSensor();
+        }
+
+        void RecalibrateSensor() {
+            sensor ??= new RaycastSensor(tr);
+            
+            sensor.SetCastOrigin(col.bounds.center);
+            sensor.SetCastDirection(RaycastSensor.CastDirection.Down);
+            RecalculateSensorLayerMask();
+            
+            const float safetyDistanceFactor = 0.001f; // Small factor added to prevent clipping issues when the sensor range is calculated
+            
+            float length = colliderHeight * (1f - stepHeightRatio) * 0.5f + colliderHeight * stepHeightRatio;
+            baseSensorRange = length * (1f + safetyDistanceFactor) * tr.localScale.x;
+            sensor.castLength = length * tr.localScale.x;
         }
 
         void RecalculateSensorLayerMask() {
@@ -97,39 +123,9 @@ namespace Snake {
             
             int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
             layerMask &= ~(1 << ignoreRaycastLayer);
-
-            _sensor.layerMask = layerMask;
-            _currentLayer = objectLayer;
-        }
-        
-        void RecalibrateSensor() {
-            _sensor ??= new RaycastSensor(_tr);
             
-            _sensor.SetCastOrigin(_col.bounds.center);
-            _sensor.SetCastDirection(RaycastSensor.CastDirection.Down);
-            RecalculateSensorLayerMask();
-
-            const float safetyDistanceFactor = 0.001f; // Small factor added to prevent clipping issues when the sensor range is calculated
-            
-            float length = _colliderHeight * (1f - _stepHeightRatio) * 0.5f + _colliderHeight * _stepHeightRatio;
-            _baseSensorRange = length * (1f + safetyDistanceFactor) * _tr.localScale.x;
-            _sensor.castLength = length * _tr.localScale.x;
-        }
-
-        void RecalculateColliderDimensions() {
-            if (_col == null) {
-                Setup();
-            }
-
-            _col.height = _colliderHeight * (1f - _stepHeightRatio);
-            _col.radius = _colliderThickness / 2f;
-            _col.center = _colliderOffset * _colliderHeight + new Vector3(0f, _stepHeightRatio * _col.height / 2f, 0f);
-
-            if (_col.height / 2f < _col.radius) {
-                _col.radius = _col.height / 2f;
-            }
-
-            RecalibrateSensor();
+            sensor.layermask = layerMask;
+            currentLayer = objectLayer;
         }
     }
 }

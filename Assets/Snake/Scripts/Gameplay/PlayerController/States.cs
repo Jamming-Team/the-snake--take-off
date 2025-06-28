@@ -4,13 +4,18 @@ using Snake.GA_SM;
 namespace Snake {
     public class GroundedState : IState {
         readonly PlayerController controller;
+        
 
         public GroundedState(PlayerController controller) {
             this.controller = controller;
         }
 
         public void OnEnter() {
-            // controller.OnGroundContactRegained();
+            
+            Debug.Log("Entered GroundedState"); 
+            
+            
+            controller.OnGroundContactRegained();
         }
     }
 
@@ -22,7 +27,9 @@ namespace Snake {
         }
 
         public void OnEnter() {
-            // controller.OnFallStart();
+            
+            Debug.Log("Entered FallingState");
+            controller.OnFallStart();
         }
     }
 
@@ -34,7 +41,9 @@ namespace Snake {
         }
 
         public void OnEnter() {
-            // controller.OnGroundContactLost();
+            
+            Debug.Log("Entered SlidingState");
+            controller.OnGroundContactLost();
         }
     }
 
@@ -46,7 +55,9 @@ namespace Snake {
         }
 
         public void OnEnter() {
-            // controller.OnGroundContactLost();
+            
+            Debug.Log("Entered RisingState");
+            controller.OnGroundContactLost();
         }
     }
 
@@ -58,8 +69,10 @@ namespace Snake {
         }
 
         public void OnEnter() {
-            // controller.OnGroundContactLost();
-            // controller.OnJumpStart();
+            
+            Debug.Log("Entered JumpingState");
+            controller.OnGroundContactLost();
+            controller.OnJumpStart();
         }
     }
 }

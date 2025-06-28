@@ -44,7 +44,14 @@ namespace Snake {
         }
 
         public void OnJump(InputAction.CallbackContext context) {
-            // throw new NotImplementedException();
+            switch (context.phase) {
+                case InputActionPhase.Started:
+                    Jump.Invoke(true);
+                    break;
+                case InputActionPhase.Canceled:
+                    Jump.Invoke(false);
+                    break;
+            }
         }
     }
 }

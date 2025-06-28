@@ -10,61 +10,74 @@ namespace Snake {
     [RequireComponent(typeof(PlayerMover))]
     public class PlayerController : MonoBehaviour {
         #region Fields
-
-        [SerializeField] InputReader _input;
-
-        Transform _tr;
-        PlayerMover _mover;
-
-        bool _jumpInputIsLocked, _jumpKeyWasPressed, _jumpKeyWasLetGo, _jumpKeyIsPressed;
-
+        [SerializeField] InputReader input;
+        
+        Transform tr;
+        PlayerMover mover;
+        // CeilingDetector ceilingDetector;
+        
+        bool jumpKeyIsPressed;    // Tracks whether the jump key is currently being held down by the player
+        bool jumpKeyWasPressed;   // Indicates if the jump key was pressed since the last reset, used to detect jump initiation
+        bool jumpKeyWasLetGo;     // Indicates if the jump key was released since it was last pressed, used to detect when to stop jumping
+        bool jumpInputIsLocked;   // Prevents jump initiation when true, used to ensure only one jump action per press
+        
         public float movementSpeed = 7f;
         public float airControlRate = 2f;
         public float jumpSpeed = 10f;
         public float jumpDuration = 0.2f;
         public float airFriction = 0.5f;
         public float groundFriction = 100f;
-        public float gravity = 10f;
+        public float gravity = 30f;
         public float slideGravity = 5f;
         public float slopeLimit = 30f;
         public bool useLocalMomentum;
-
-        GA_SM.StateMachine _stateMachine;
-        XTools.CountdownTimer _jumpTimer;
-
-        // So we can control our movement based on where is the camera pointing
-        // THE THING I NEED
-        [SerializeField] Transform _cameraTransform;
-
-        Vector3 _momentum, _savedVelocity, _savedMovementVelocity;
+        
+        StateMachine stateMachine;
+        XTools.CountdownTimer jumpTimer;
+        
+        [SerializeField] Transform cameraTransform;
+        
+        Vector3 momentum, savedVelocity, savedMovementVelocity;
         
         public event Action<Vector3> OnJump = delegate { };
-        public event Action<Vector3> OnLand  = delegate { };
-        
+        public event Action<Vector3> OnLand = delegate { };
         #endregion
+        
+        bool IsGrounded() => stateMachine.CurrentState is GroundedState or SlidingState;
+        public Vector3 GetVelocity() => savedVelocity;
+        public Vector3 GetMomentum() => useLocalMomentum ? tr.localToWorldMatrix * momentum : momentum;
+        public Vector3 GetMovementVelocity() => savedMovementVelocity;
 
         void Awake() {
-            _tr = transform;
-            _mover = GetComponent<PlayerMover>();
-            // The hell is ceilingDetector
+            tr = transform;
+            mover = GetComponent<PlayerMover>();
+            // ceilingDetector = GetComponent<CeilingDetector>();
             
-            _jumpTimer = new XTools.CountdownTimer(jumpDuration);
-            
+            jumpTimer = new XTools.CountdownTimer(jumpDuration);
             SetupStateMachine();
         }
 
         void Start() {
-            _input.EnablePlayerActions();
+            input.EnablePlayerActions();
+            input.Jump += HandleJumpKeyInput;
         }
 
-        void Update() {
-            _stateMachine.Update();
-            Debug.Log(_stateMachine.CurrentState);
+        void HandleJumpKeyInput(bool isButtonPressed) {
+            if (!jumpKeyIsPressed && isButtonPressed) {
+                jumpKeyWasPressed = true;
+            }
+
+            if (jumpKeyIsPressed && !isButtonPressed) {
+                jumpKeyWasLetGo = true;
+                jumpInputIsLocked = false;
+            }
+            
+            jumpKeyIsPressed = isButtonPressed;
         }
 
         void SetupStateMachine() {
-            _stateMachine = new GA_SM.StateMachine();
-
+            stateMachine = new StateMachine();
+            
             var grounded = new GroundedState(this);
             var falling = new FallingState(this);
             var sliding = new SlidingState(this);
@@ -72,74 +85,74 @@ namespace Snake {
             var jumping = new JumpingState(this);
             
             At(grounded, rising, () => IsRising());
-            At(grounded, sliding, () => _mover.IsGrounded() && IsGroundTooSteep());
-            At(grounded, falling, () => !_mover.IsGrounded());
-            At(grounded, jumping, () => (_jumpKeyIsPressed || _jumpKeyWasPressed) && !_jumpInputIsLocked);
+            At(grounded, sliding, () => mover.IsGrounded() && IsGroundTooSteep());
+            At(grounded, falling, () => !mover.IsGrounded());
+            At(grounded, jumping, () => (jumpKeyIsPressed || jumpKeyWasPressed) && !jumpInputIsLocked);
             
             At(falling, rising, () => IsRising());
-            At(falling, grounded, () => _mover.IsGrounded() && !IsGroundTooSteep());
-            At(falling, sliding, () => _mover.IsGrounded() && IsGroundTooSteep());
+            At(falling, grounded, () => mover.IsGrounded() && !IsGroundTooSteep());
+            At(falling, sliding, () => mover.IsGrounded() && IsGroundTooSteep());
             
             At(sliding, rising, () => IsRising());
-            At(sliding, falling, () => !_mover.IsGrounded());
-            At(sliding, grounded, () => _mover.IsGrounded() && !IsGroundTooSteep());
+            At(sliding, falling, () => !mover.IsGrounded());
+            At(sliding, grounded, () => mover.IsGrounded() && !IsGroundTooSteep());
             
-            At(rising, grounded, () => _mover.IsGrounded() && !IsGroundTooSteep());
-            At(rising, sliding, () => _mover.IsGrounded() && IsGroundTooSteep());
+            At(rising, grounded, () => mover.IsGrounded() && !IsGroundTooSteep());
+            At(rising, sliding, () => mover.IsGrounded() && IsGroundTooSteep());
             At(rising, falling, () => IsFalling());
+
             
-            // TODO Add Jumping Transitions
+            At(jumping, rising, () => jumpTimer.IsFinished || jumpKeyWasLetGo);
+
             
-            _stateMachine.SetState(falling);
+            stateMachine.SetState(falling);
         }
         
-        // At one state and we want to go another state on condition
-        void At(IState from, IState to, Func<bool> condition) => _stateMachine.AddTransition(from, to, condition);
-        // Transition to a state from any other state
-        void Any<T>(IState to, Func<bool> condition) => _stateMachine.AddAnyTransition(to, condition);
-
-        bool IsRising() => VectorMath.GetDotProduct(GetMomentum(), _tr.up) > 0f;
-        bool IsFalling() => VectorMath.GetDotProduct(GetMomentum(), _tr.up) < 0f;
-        bool IsGroundTooSteep() => Vector3.Angle(_mover.GetGroundNormal(), _tr.up) > slopeLimit;
+        void At(IState from, IState to, Func<bool> condition) => stateMachine.AddTransition(from, to, condition);
+        void Any<T>(IState to, Func<bool> condition) => stateMachine.AddAnyTransition(to, condition);
         
-        public Vector3 GetMomentum() => useLocalMomentum ? _tr.localToWorldMatrix * _momentum : _momentum;
+        bool IsRising() => VectorMath.GetDotProduct(GetMomentum(), tr.up) > 0f;
+        bool IsFalling() => VectorMath.GetDotProduct(GetMomentum(), tr.up) < 0f;
+        bool IsGroundTooSteep() => !mover.IsGrounded() || Vector3.Angle(mover.GetGroundNormal(), tr.up) > slopeLimit;
+        
+        void Update() => stateMachine.Update();
 
         void FixedUpdate() {
-            _mover.CheckForGrounder();
+            stateMachine.FixedUpdate();
+            mover.CheckForGround();
             HandleMomentum();
-            // Calculate movement velocity
-            Vector3 velocity = _stateMachine.CurrentState is GroundedState ? CalculateMovementVelocity() : Vector3.zero;
-            velocity += useLocalMomentum ? _tr.localToWorldMatrix * _momentum : _momentum;
+            Vector3 velocity = stateMachine.CurrentState is GroundedState ? CalculateMovementVelocity() : Vector3.zero;
+            velocity += useLocalMomentum ? tr.localToWorldMatrix * momentum : momentum;
             
-            _mover.SetExtendSensorRange(IsGrounded());
-            _mover.SetVelocity(velocity);
-
-            _savedVelocity = velocity;
-            _savedMovementVelocity = CalculateMovementVelocity();
+            mover.SetExtendSensorRange(IsGrounded());
+            mover.SetVelocity(velocity);
+            
+            savedVelocity = velocity;
+            savedMovementVelocity = CalculateMovementVelocity();
+            
+            ResetJumpKeys();
+            
         }
         
-        // Essentially just our movement direction multiplied by speed
         Vector3 CalculateMovementVelocity() => CalculateMovementDirection() * movementSpeed;
 
         Vector3 CalculateMovementDirection() {
-            Vector3 direction = _cameraTransform == null 
-                ? _tr.right * _input.direction.x + _tr.forward * _input.direction.y
-                : Vector3.ProjectOnPlane(_cameraTransform.right, _tr.up).normalized *  _input.direction.x +
-                  Vector3.ProjectOnPlane(_cameraTransform.forward, _tr.up).normalized *  _input.direction.y;
+            Vector3 direction = cameraTransform == null 
+                ? tr.right * input.direction.x + tr.forward * input.direction.y 
+                : Vector3.ProjectOnPlane(cameraTransform.right, tr.up).normalized * input.direction.x + 
+                  Vector3.ProjectOnPlane(cameraTransform.forward, tr.up).normalized * input.direction.y;
             
             return direction.magnitude > 1f ? direction.normalized : direction;
         }
 
         void HandleMomentum() {
-            if (useLocalMomentum) _momentum = _tr.localToWorldMatrix * _momentum;
-
-            Vector3 verticalMomentum = VectorMath.ExtractDotVector(_momentum, _tr.up);
-            Vector3 horizontalMomentum = _momentum -  verticalMomentum;
+            if (useLocalMomentum) momentum = tr.localToWorldMatrix * momentum;
             
-            verticalMomentum -= _tr.up * (gravity * Time.deltaTime);
-
-            if (_stateMachine.CurrentState is GroundedState &&
-                VectorMath.GetDotProduct(verticalMomentum, _tr.up) < 0f) {
+            Vector3 verticalMomentum = VectorMath.ExtractDotVector(momentum, tr.up);
+            Vector3 horizontalMomentum = momentum - verticalMomentum;
+            
+            verticalMomentum -= tr.up * (gravity * Time.deltaTime);
+            if (stateMachine.CurrentState is GroundedState && VectorMath.GetDotProduct(verticalMomentum, tr.up) < 0f) {
                 verticalMomentum = Vector3.zero;
             }
 
@@ -147,31 +160,78 @@ namespace Snake {
                 AdjustHorizontalMomentum(ref horizontalMomentum, CalculateMovementVelocity());
             }
 
-            if (_stateMachine.CurrentState is SlidingState) {
+            if (stateMachine.CurrentState is SlidingState) {
                 HandleSliding(ref horizontalMomentum);
             }
             
-            float friction = _stateMachine.CurrentState is GroundedState ? groundFriction : airFriction;
+            float friction = stateMachine.CurrentState is GroundedState ? groundFriction : airFriction;
             horizontalMomentum = Vector3.MoveTowards(horizontalMomentum, Vector3.zero, friction * Time.deltaTime);
             
-            _momentum = horizontalMomentum + verticalMomentum;;
+            momentum = horizontalMomentum + verticalMomentum;
+
+            if (stateMachine.CurrentState is JumpingState) {
+                HandleJumping();
+            }
             
-            // TODO Handle Jumping
+            if (stateMachine.CurrentState is SlidingState) {
+                momentum = Vector3.ProjectOnPlane(momentum, mover.GetGroundNormal());
+                if (VectorMath.GetDotProduct(momentum, tr.up) > 0f) {
+                    momentum = VectorMath.RemoveDotVector(momentum, tr.up);
+                }
             
-            if (useLocalMomentum) _momentum = _tr.worldToLocalMatrix * _momentum;
+                Vector3 slideDirection = Vector3.ProjectOnPlane(-tr.up, mover.GetGroundNormal()).normalized;
+                momentum += slideDirection * (slideGravity * Time.deltaTime);
+            }
+            
+            if (useLocalMomentum) momentum = tr.worldToLocalMatrix * momentum;
         }
 
-        void HandleSliding(ref Vector3 horizontalMomentum) {
-            Vector3 pointDownVector = Vector3.ProjectOnPlane(_mover.GetGroundNormal(), _tr.up).normalized;
-            Vector3 movementVelocity = CalculateMovementVelocity();
-            movementVelocity = VectorMath.RemoveDotVector(movementVelocity, pointDownVector);
-            horizontalMomentum += movementVelocity * Time.fixedDeltaTime;
+        void HandleJumping() {
+            momentum = VectorMath.RemoveDotVector(momentum, tr.up);
+            momentum += tr.up * jumpSpeed;
+        }
+
+        void ResetJumpKeys() {
+            jumpKeyWasLetGo = false;
+            jumpKeyWasPressed = false;
+        }
+
+        public void OnJumpStart() {
+            if (useLocalMomentum) momentum = tr.localToWorldMatrix * momentum;
             
-            _momentum = Vector3.ProjectOnPlane(_momentum, _mover.GetGroundNormal());
-            if (VectorMath.GetDotProduct(_momentum, _tr.up) > 0f) _momentum = VectorMath.RemoveDotVector(_momentum, _tr.up);
+            momentum += tr.up * jumpSpeed;
+            jumpTimer.Start();
+            jumpInputIsLocked = true;
+            OnJump.Invoke(momentum);
             
-            Vector3 slideDirection = Vector3.ProjectOnPlane(-_tr.up, _mover.GetGroundNormal().normalized);
-            _momentum += slideDirection * (slideGravity * Time.deltaTime);
+            if (useLocalMomentum) momentum = tr.worldToLocalMatrix * momentum;
+        }
+
+        public void OnGroundContactLost() {
+            if (useLocalMomentum) momentum = tr.localToWorldMatrix * momentum;
+            
+            Vector3 velocity = GetMovementVelocity();
+            if (velocity.sqrMagnitude >= 0f && momentum.sqrMagnitude > 0f) {
+                Vector3 projectedMomentum = Vector3.Project(momentum, velocity.normalized);
+                float dot = VectorMath.GetDotProduct(projectedMomentum.normalized, velocity.normalized);
+                
+                if (projectedMomentum.sqrMagnitude >= velocity.sqrMagnitude && dot > 0f) velocity = Vector3.zero;
+                else if (dot > 0f) velocity -= projectedMomentum;
+            }
+            momentum += velocity;
+            
+            if (useLocalMomentum) momentum = tr.worldToLocalMatrix * momentum;
+        }
+
+        public void OnGroundContactRegained() {
+            Vector3 collisionVelocity = useLocalMomentum ? tr.localToWorldMatrix * momentum : momentum;
+            OnLand.Invoke(collisionVelocity);
+        }
+
+        public void OnFallStart() {
+            var currentUpMomemtum = VectorMath.ExtractDotVector(momentum, tr.up);
+            momentum = VectorMath.RemoveDotVector(momentum, tr.up);
+            momentum -= tr.up * currentUpMomemtum.magnitude;
         }
         
         void AdjustHorizontalMomentum(ref Vector3 horizontalMomentum, Vector3 movementVelocity) {
@@ -179,7 +239,6 @@ namespace Snake {
                 if (VectorMath.GetDotProduct(movementVelocity, horizontalMomentum.normalized) > 0f) {
                     movementVelocity = VectorMath.RemoveDotVector(movementVelocity, horizontalMomentum.normalized);
                 }
-                    
                 horizontalMomentum += movementVelocity * (Time.deltaTime * airControlRate * 0.25f);
             }
             else {
@@ -187,9 +246,12 @@ namespace Snake {
                 horizontalMomentum = Vector3.ClampMagnitude(horizontalMomentum, movementSpeed);
             }
         }
-        
-        bool IsGrounded()  => _stateMachine.CurrentState is GroundedState or SlidingState;
 
-        
+        void HandleSliding(ref Vector3 horizontalMomentum) {
+            Vector3 pointDownVector = Vector3.ProjectOnPlane(mover.GetGroundNormal(), tr.up).normalized;
+            Vector3 movementVelocity = CalculateMovementVelocity();
+            movementVelocity = VectorMath.RemoveDotVector(movementVelocity, pointDownVector);
+            horizontalMomentum += movementVelocity * Time.fixedDeltaTime;
+        }
     }
 }
