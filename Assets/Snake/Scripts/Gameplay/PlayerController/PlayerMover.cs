@@ -78,6 +78,12 @@ namespace Snake {
             _rb.useGravity = false;
             
         }
+        
+        void LateUpdate() {
+            if (_isInDebugMode) {
+                _sensor.DrawDebug();
+            }
+        }
 
         void RecalculateSensorLayerMask() {
             int objectLayer = gameObject.layer;

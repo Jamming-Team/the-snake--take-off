@@ -41,14 +41,24 @@ namespace Snake {
         Vector3 GetCastDirection() {
             // This is an example of Switch Expression
             return _castDirection switch {
-                CastDirection.Forward => Vector3.forward,
-                CastDirection.Right => Vector3.right,
-                CastDirection.Up => Vector3.up,
-                CastDirection.Backward => Vector3.back,
-                CastDirection.Left => Vector3.left,
-                CastDirection.Down => Vector3.down,
+                CastDirection.Forward => _tr.forward,
+                CastDirection.Right => _tr.right,
+                CastDirection.Up => _tr.up,
+                CastDirection.Backward => -_tr.forward,
+                CastDirection.Left => _tr.right,
+                CastDirection.Down => -_tr.up,
                 _ => Vector3.one
             };
+        }
+        
+        public void DrawDebug() {
+            if (!HasDetectedHit()) return;
+
+            Debug.DrawRay(_hitInfo.point, _hitInfo.normal, Color.red, Time.deltaTime);
+            float markerSize = 0.2f;
+            Debug.DrawLine(_hitInfo.point + Vector3.up * markerSize, _hitInfo.point - Vector3.up * markerSize, Color.green, Time.deltaTime);
+            Debug.DrawLine(_hitInfo.point + Vector3.right * markerSize, _hitInfo.point - Vector3.right * markerSize, Color.green, Time.deltaTime);
+            Debug.DrawLine(_hitInfo.point + Vector3.forward * markerSize, _hitInfo.point - Vector3.forward * markerSize, Color.green, Time.deltaTime);
         }
     }
 }

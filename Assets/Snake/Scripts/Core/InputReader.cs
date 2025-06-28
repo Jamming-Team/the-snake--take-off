@@ -11,6 +11,7 @@ namespace Snake {
         void DisablePlayerActions();
     }
     
+    [CreateAssetMenu(fileName = "SnakeInputReader", menuName = "Snake/SnakeInputReader", order = 0)]
     public class InputReader : ScriptableObject, IInputReader, IGameplayActions {
         
         public event UnityAction<bool> Jump = delegate { };
@@ -35,15 +36,15 @@ namespace Snake {
         }
 
         public void OnMove(InputAction.CallbackContext context) {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public void OnLook(InputAction.CallbackContext context) {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public void OnJump(InputAction.CallbackContext context) {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
     }
 }
