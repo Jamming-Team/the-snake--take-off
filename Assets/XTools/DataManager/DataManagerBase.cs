@@ -1,11 +1,13 @@
+using System;
 using UnityEngine;
 
 namespace XTools {
-    public class DataManagerBase<TData> : MonoBehaviour, IVisitor where TData : GameDataSOBase {
+    public class DataManagerBase<TData> : MonoBehaviour, IVisitorDataSupplier where TData : GameDataSOBase {
         [SerializeField] TData _gameData;
 
-        void Awake() {
-            ServiceLocator.Global.Register(this);
+
+        protected virtual void Awake() {
+            ServiceLocator.Global.Register(typeof(IVisitorDataSupplier),this);
         }
 
         public void TrySupply(IVisitable requester) {
@@ -27,7 +29,7 @@ namespace XTools {
             Debug.Log("DataManager.DefaultVisit");
         }
 
-        void Visit(AudioManager requester) {
+        public void Visit(AudioManager requester) {
             requester.SetData(_gameData.audio);
         } 
     }

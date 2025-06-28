@@ -6,15 +6,16 @@ using UnityEngine;
 namespace XTools {
     [Serializable]
     public class AudioData {
+        [Range(0.01f, 1f)]
         public float musicVolume;
+        [Range(0.01f, 1f)]
         public float sfxVolume;
-        public MusicData music;
+        // public MusicData music;
     }
-
+    
     [Serializable]
     public class MusicData {
         // public List<AudioClip> audioClips;
-        [AlchemySerializeField] [NonSerialized]
         public Dictionary<MusicBundleType, MusicBundle> bundles = new();
 
         public float crossFadeTime = 2.0f;

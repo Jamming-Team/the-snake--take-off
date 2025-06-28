@@ -9,6 +9,7 @@ namespace XTools {
         public readonly LinkedList<SoundEmitter> frequentSoundEmitters = new();
         
         public AudioMixer mixer;
+        [HideInInspector]
         public bool initialized = false;
         
         [SerializeField] SoundEmitter _soundEmitterPrefab;

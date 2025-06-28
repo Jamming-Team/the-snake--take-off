@@ -16,19 +16,19 @@ namespace XTools {
         bool _initialized = false;
 
         void Start() {
-            ServiceLocator.For(this).Get(out DataManagerBase<GameDataSOBase> dataManager);
+            ServiceLocator.For(this).Get(out IVisitorDataSupplier dataManager);
             dataManager.TrySupply(this);
 
             AdjustMixerVolume();
 
-            _musicModel = new MusicModel(_data.music,
-                new MusicModel.MusicSourcesPair { sourceOne = _musicSources[0], sourceTwo = _musicSources[1] });
+            // _musicModel = new MusicModel(_data.music,
+            //     new MusicModel.MusicSourcesPair { sourceOne = _musicSources[0], sourceTwo = _musicSources[1] });
 
             // Subscribe the data event
 
             _initialized = true;
 
-            PlayMusic(MusicBundleType.MainMenu, true);
+            // PlayMusic(MusicBundleType.MainMenu, true);
         }
 
         void OnDestroy() {
@@ -38,7 +38,7 @@ namespace XTools {
         void Update() {
             if (!_initialized) return;
 
-            _musicModel.CheckForCrossFade();
+            // _musicModel.CheckForCrossFade();
         }
 
         // --- Interface ---

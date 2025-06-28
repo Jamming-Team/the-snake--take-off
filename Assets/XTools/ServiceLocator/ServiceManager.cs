@@ -49,7 +49,7 @@ namespace XTools {
                 throw new ArgumentException(type + " is not an instance of " + service.GetType());
             }
 
-            if (_services.TryAdd(type, service)) {
+            if (!_services.TryAdd(type, service)) {
                 Debug.LogError("Service already registered: " + type);
             }
 
