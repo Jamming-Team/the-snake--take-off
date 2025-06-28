@@ -13,6 +13,22 @@ namespace XTools {
             MusicVolume,
         }
     }
+    
+    public struct UIButtonPressed : IEvent {
+        public UIButtons buttonType;
+
+        public enum UIButtons {
+            Back,
+            Continue,
+            LoadMainMenu,
+            LoadGameplay,
+            Settings
+        }
+    }
+    
+    
+
+
 
     // And he uses struct bcs:
     // "Structs are allocated on a stack, not a heap so they put way less pressure on the garbage collector"
