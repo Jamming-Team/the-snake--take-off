@@ -1,12 +1,11 @@
 {
-    "name": "XTools",
-    "rootNamespace": "XTools",
+    "name": "AYellowpaper.SerializedCollections.Editor",
     "references": [
-        "GUID:88be65f96b86746888c927a5c8ff3534",
-        "GUID:d525ad6bd40672747bde77962f1c401e",
-        "GUID:234340c04eed5674a988bc6ebde7d248"
+        "GUID:d525ad6bd40672747bde77962f1c401e"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
