@@ -23,9 +23,10 @@ namespace Snake {
         }
 
         void ItemAdded(InventoryItem obj) {
-            Debug.Log("ItemAdded");
+            // Debug.Log("ItemAdded");
             var item  = Instantiate(_gridItemPrefab, _gridRoot.transform);
             item.image.sprite =  obj.sprite;
+            item.itemName = obj.name;
             _items.Add(item);
         }
 
