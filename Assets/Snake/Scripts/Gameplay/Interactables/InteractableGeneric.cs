@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Snake {
     public class InteractableGeneric : InteractableBase {
         [SerializeField] string _requiredItemName;
         [SerializeField] bool _destroyOnInteract;
-        [SerializeField] ActivatableBase _activatable;
+        [SerializeField] List<ActivatableBase> _activatables;
         
         public override void Interact() {
 
@@ -13,8 +14,10 @@ namespace Snake {
                     return;
                 }
             }
-            
-            _activatable.Activate();
+
+            foreach (var activatable in _activatables) { 
+                activatable.Activate();
+            }
 
             if (_destroyOnInteract) {
                 Destroy(gameObject);
