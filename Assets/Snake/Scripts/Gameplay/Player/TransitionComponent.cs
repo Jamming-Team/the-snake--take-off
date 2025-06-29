@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using XTools;
 
 namespace Snake {
     public class TransitionComponent : MonoBehaviour {

@@ -431,6 +431,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collider: {fileID: 223899870839009295}
+  _openDoorSound:
+    clips:
+    - {fileID: 8300000, guid: a8421c221205bd1f5b35963a19ef4600, type: 3}
+    mixerGroup: {fileID: -1529733149770915992, guid: 21b6e9cffed4317f28eeb700ac500093, type: 2}
+    playOnAwake: 0
+    frequentSound: 0
+    mute: 0
+    bypassEffects: 0
+    bypassListenerEffects: 0
+    bypassReverbZones: 0
+    priority: 128
+    volume: 0.7
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 1
+    reverbZoneMix: 1
+    dopplerLevel: 1
+    spread: 0
+    minDistance: 1
+    maxDistance: 10
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    rolloffMode: 2
+    shouldPlayOnLoop: 0
+    objectToStick: {fileID: 0}
   _animator: {fileID: 4121767440291966002}
 --- !u!1 &4893873264257917348
 GameObject:

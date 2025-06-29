@@ -10,6 +10,8 @@ namespace Snake {
 
         [SerializeField] GameObject _oldWorld;
         [SerializeField] GameObject _newWorld;
+        
+        [SerializeField] SoundData _transitionSound;
 
         [SerializeField] Volume _volume;
         [SerializeField] float _effectDuration = 1;
@@ -18,6 +20,7 @@ namespace Snake {
         FilmGrain  _filmGrain;
         TransitionComponent _transitionComponent;
         bool _isIncreasing;
+        AudioManager _audioManager;
 
         void Awake() {
             _volume.profile.TryGet(out _filmGrain);
@@ -27,6 +30,8 @@ namespace Snake {
             ServiceLocator.For(this).Get(out PlayerMediator mediator);
             _transitionComponent = mediator.transitionComponent;
             _transitionComponent.OnTransition += ChangeDeWorld;
+            
+            ServiceLocator.For(this).Get(out _audioManager);
         }
 
         void Update() {
@@ -41,6 +46,7 @@ namespace Snake {
             _oldWorld.SetActive(!_oldWorld.activeSelf);
             _newWorld.SetActive(!_newWorld.activeSelf);
             
+            _audioManager.PlaySound(_transitionSound);
         }
 
         float t = 0f;

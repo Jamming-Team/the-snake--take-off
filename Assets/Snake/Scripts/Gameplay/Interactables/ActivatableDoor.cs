@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
+using XTools;
 
 namespace Snake {
     public class ActivatableDoor : ActivatableBase {
         [SerializeField] Collider _collider;
+        [SerializeField] SoundData _openDoorSound;
         
         [SerializeField] Animator _animator;
 
@@ -15,6 +17,12 @@ namespace Snake {
         //         _shouldSlide = false;
         //     }
         // }
+        
+        AudioManager _audioManager;
+
+        void Start() {
+            ServiceLocator.For(this).Get(out _audioManager);
+        }
 
         void Update() {
             
@@ -31,6 +39,7 @@ namespace Snake {
             _shouldSlide = true;
             _collider.enabled = !_collider.enabled;
             _animator.SetTrigger("Slide");
+            _audioManager.PlaySound(_openDoorSound, transform);
         }
     }
 }

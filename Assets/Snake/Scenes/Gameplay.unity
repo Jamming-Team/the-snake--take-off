@@ -18764,6 +18764,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _oldWorld: {fileID: 505199113}
   _newWorld: {fileID: 1659156484}
+  _transitionSound:
+    clips:
+    - {fileID: 8300000, guid: 21f06492fbbf77a3b9b83ba2e6b873ce, type: 3}
+    mixerGroup: {fileID: -1529733149770915992, guid: 21b6e9cffed4317f28eeb700ac500093, type: 2}
+    playOnAwake: 0
+    frequentSound: 0
+    mute: 0
+    bypassEffects: 0
+    bypassListenerEffects: 0
+    bypassReverbZones: 0
+    priority: 128
+    volume: 0.6
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 0
+    reverbZoneMix: 1
+    dopplerLevel: 1
+    spread: 0
+    minDistance: 1
+    maxDistance: 500
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    rolloffMode: 0
+    shouldPlayOnLoop: 0
+    objectToStick: {fileID: 0}
   _volume: {fileID: 426895288}
   _effectDuration: 1
 --- !u!4 &2095552365
