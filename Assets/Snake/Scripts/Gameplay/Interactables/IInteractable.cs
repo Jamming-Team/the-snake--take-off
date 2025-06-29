@@ -14,5 +14,7 @@ namespace Snake {
     public class InteractableData {
         public string textToShow;
         public Sprite imageToShow;
+        public InteractType interactType;
+        public Color color;
     }
 }

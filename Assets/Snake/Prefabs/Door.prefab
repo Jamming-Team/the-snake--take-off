@@ -304,9 +304,11 @@ MonoBehaviour:
   _data:
     textToShow: Use key
     imageToShow: {fileID: 21300000, guid: 3b5bcfdd2bbf497f89a20cf4909ce8fd, type: 3}
+    interactType: 2
+    color: {r: 1, g: 1, b: 1, a: 1}
   _requiredItemName: 123
   _destroyOnInteract: 1
-  _activatable: {fileID: 3434816020191884572}
+  _activatables: []
 --- !u!1 &2831149266397380936
 GameObject:
   m_ObjectHideFlags: 0
