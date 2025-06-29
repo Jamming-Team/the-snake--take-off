@@ -11,6 +11,7 @@ namespace Snake {
         PlayerController _playerController;
         InteractComponent _interactComponent;
         PlayerMediator _playerMediator;
+        TransitionComponent _transitionComponent;
 
         void Awake() {
             _inputReader.EnablePlayerActions();
@@ -22,9 +23,12 @@ namespace Snake {
             
             _interactComponent = GetComponent<InteractComponent>();
             _interactComponent.Init(_inputReader, _playerMediator);
-
+            
+            _transitionComponent =  GetComponent<TransitionComponent>();
+            _transitionComponent.Init(_inputReader);
+            
             _playerMediator = new PlayerMediator();
-            _playerMediator.Init(_interactComponent, _playerInventory);
+            _playerMediator.Init(_interactComponent, _playerInventory, _transitionComponent);
         }
     }
 }

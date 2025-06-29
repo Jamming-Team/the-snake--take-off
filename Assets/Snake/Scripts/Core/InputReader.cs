@@ -16,6 +16,7 @@ namespace Snake {
         
         public event UnityAction<bool> Jump = delegate { };
         public event UnityAction Interact = delegate { };
+        public event UnityAction Transit = delegate { };
         
         SnakeInputActions _inputActions;
         
@@ -63,6 +64,10 @@ namespace Snake {
 
         public void OnPause(InputAction.CallbackContext context) {
             // throw new NotImplementedException();
+        }
+
+        public void OnTransit(InputAction.CallbackContext context) {
+            Transit.Invoke();
         }
     }
 }
