@@ -15,6 +15,7 @@ namespace Snake {
     public class InputReader : ScriptableObject, IInputReader, IGameplayActions {
         
         public event UnityAction<bool> Jump = delegate { };
+        public event UnityAction Interact = delegate { };
         
         SnakeInputActions _inputActions;
         
@@ -54,6 +55,14 @@ namespace Snake {
             }
         }
 
+        public void OnInteract(InputAction.CallbackContext context) {
+            if (context.started) {
+                Interact.Invoke();
+            }
+        }
 
+        public void OnPause(InputAction.CallbackContext context) {
+            // throw new NotImplementedException();
+        }
     }
 }

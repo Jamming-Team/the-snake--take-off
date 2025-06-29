@@ -10,7 +10,7 @@ namespace Snake {
     [RequireComponent(typeof(PlayerMover))]
     public class PlayerController : MonoBehaviour {
         #region Fields
-        [SerializeField] InputReader input;
+        InputReader input;
         
         
         Transform tr;
@@ -50,21 +50,32 @@ namespace Snake {
         public Vector3 GetMovementVelocity() => savedMovementVelocity;
 
         void Awake() {
+            // tr = transform;
+            // mover = GetComponent<PlayerMover>();
+            // // ceilingDetector = GetComponent<CeilingDetector>();
+            //
+            // jumpTimer = new XTools.CountdownTimer(jumpDuration);
+            // SetupStateMachine();
+
+
+        }
+
+        public void Init(InputReader inputReader) {
+            input =  inputReader;
+            input.Jump += HandleJumpKeyInput;
+            
             tr = transform;
             mover = GetComponent<PlayerMover>();
             // ceilingDetector = GetComponent<CeilingDetector>();
             
             jumpTimer = new XTools.CountdownTimer(jumpDuration);
             SetupStateMachine();
-
-            Cursor.lockState = CursorLockMode.Locked;
-
         }
-
-        void Start() {
-            input.EnablePlayerActions();
-            input.Jump += HandleJumpKeyInput;
-        }
+        
+        // void Start() {
+        //     input.EnablePlayerActions();
+        //     input.Jump += HandleJumpKeyInput;
+        // }
 
         void HandleJumpKeyInput(bool isButtonPressed) {
             if (!jumpKeyIsPressed && isButtonPressed) {
