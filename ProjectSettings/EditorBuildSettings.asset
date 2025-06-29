@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Snake/Scenes/Gameplay.unity
+    guid: cab4a968f9862554a86edeac900824ce
+  - enabled: 1
     path: Assets/Snake/Scenes/Core.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
@@ -14,9 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Snake/Scenes/MainMenu.unity
     guid: 8f96d1e4bed0edc3b92bb30a3f518d73
-  - enabled: 1
-    path: Assets/Snake/Scenes/Gameplay.unity
-    guid: cab4a968f9862554a86edeac900824ce
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: d4b7b840e02d532e6b67c95448842cea, type: 3}
   m_UseUCBPForAssetBundles: 0

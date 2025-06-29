@@ -28,7 +28,6 @@ namespace XTools {
             EditorApplication.playModeStateChanged -= OnPlayModeState;
             EditorApplication.playModeStateChanged += OnPlayModeState;
 
-#endif
 
             static void OnPlayModeState(PlayModeStateChange state) {
                 if (state == PlayModeStateChange.EnteredEditMode) {
@@ -39,6 +38,9 @@ namespace XTools {
                     TimerManager.Clear();
                 }
             }
+            
+#endif
+            
         }
 
         static void RemoveTimerManager<T>(ref PlayerLoopSystem loop) {

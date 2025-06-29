@@ -12,6 +12,7 @@ namespace Snake {
         #region Fields
         [SerializeField] InputReader input;
         
+        
         Transform tr;
         PlayerMover mover;
         // CeilingDetector ceilingDetector;
@@ -55,6 +56,9 @@ namespace Snake {
             
             jumpTimer = new XTools.CountdownTimer(jumpDuration);
             SetupStateMachine();
+
+            Cursor.lockState = CursorLockMode.Locked;
+
         }
 
         void Start() {

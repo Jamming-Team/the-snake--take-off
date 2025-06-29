@@ -12,7 +12,7 @@ namespace Snake {
 
         public void OnEnter() {
             
-            Debug.Log("Entered GroundedState"); 
+            // Debug.Log("Entered GroundedState"); 
             
             
             controller.OnGroundContactRegained();
@@ -28,7 +28,7 @@ namespace Snake {
 
         public void OnEnter() {
             
-            Debug.Log("Entered FallingState");
+            // Debug.Log("Entered FallingState");
             controller.OnFallStart();
         }
     }
@@ -42,7 +42,7 @@ namespace Snake {
 
         public void OnEnter() {
             
-            Debug.Log("Entered SlidingState");
+            // Debug.Log("Entered SlidingState");
             controller.OnGroundContactLost();
         }
     }
@@ -56,7 +56,7 @@ namespace Snake {
 
         public void OnEnter() {
             
-            Debug.Log("Entered RisingState");
+            // Debug.Log("Entered RisingState");
             controller.OnGroundContactLost();
         }
     }
@@ -70,7 +70,7 @@ namespace Snake {
 
         public void OnEnter() {
             
-            Debug.Log("Entered JumpingState");
+            // Debug.Log("Entered JumpingState");
             controller.OnGroundContactLost();
             controller.OnJumpStart();
         }
