@@ -150,7 +150,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -175,6 +175,7 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 6db9bcb1ca73f19ddaad3ad1f569bfc4, type: 3}
     color: {r: 1, g: 1, b: 1, a: 1}
     name: 123
+  _additionalKey: {fileID: 0}
 --- !u!1 &8295190166938939152
 GameObject:
   m_ObjectHideFlags: 0
