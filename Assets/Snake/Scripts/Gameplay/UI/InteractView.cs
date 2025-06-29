@@ -1,12 +1,14 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using XTools;
 
 namespace Snake {
     public class InteractView : MonoBehaviour {
         
         [SerializeField] TMP_Text _text;
+        [SerializeField] Image _image;
         [SerializeField] GameObject _interactPanel;
         
         InteractComponent _interactComponent;
@@ -24,10 +26,11 @@ namespace Snake {
             _interactPanel.SetActive(false);
         }
 
-        void OnEnterInteract(string obj) {
+        void OnEnterInteract(InteractableData obj) {
             // Debug.Log(obj);
             if (obj != null) {
-                _text.text = obj;
+                // _text.text = obj;
+                _image.sprite = obj.imageToShow;
                 _interactPanel.SetActive(true);
             }
             else {

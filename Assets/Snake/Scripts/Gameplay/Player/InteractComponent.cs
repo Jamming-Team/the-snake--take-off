@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Snake {
     public class InteractComponent : MonoBehaviour {
-        public Action<string> OnEnterInteract = delegate {};
+        public Action<InteractableData> OnEnterInteract = delegate {};
         
         [SerializeField] LayerMask _interactableLayerMask;
         [SerializeField] Transform _cameraTransform;
@@ -52,7 +52,7 @@ namespace Snake {
             
             if (_hitInfo.collider && _hitInfo.collider != _oldCollider) {
                 _oldCollider = _hitInfo.collider;
-                OnEnterInteract.Invoke(_oldCollider.GetComponent<IInteractable>().GetInteractableData().textToShow);
+                OnEnterInteract.Invoke(_oldCollider.GetComponent<IInteractable>().GetInteractableData());
             }
 
         }

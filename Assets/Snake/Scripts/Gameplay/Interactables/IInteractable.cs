@@ -13,5 +13,6 @@ namespace Snake {
     [Serializable]
     public class InteractableData {
         public string textToShow;
+        public Sprite imageToShow;
     }
 }

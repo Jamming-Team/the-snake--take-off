@@ -27,6 +27,7 @@ namespace Snake {
             var item  = Instantiate(_gridItemPrefab, _gridRoot.transform);
             item.image.sprite =  obj.sprite;
             item.itemName = obj.name;
+            item.image.color = obj.color;
             _items.Add(item);
         }
 
