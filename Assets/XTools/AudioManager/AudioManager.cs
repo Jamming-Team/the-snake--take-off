@@ -16,10 +16,14 @@ namespace XTools {
         bool _initialized = false;
         EventBinding<DataChanged> _dataChangedBinding;
 
+        void Awake() {
+            ServiceLocator.Global.Register(this);
+        }
 
         void Start() {
             ServiceLocator.For(this).Get(out IVisitorDataSupplier dataManager);
             dataManager.TrySupply(this);
+            
 
             AdjustMixerVolume();
 

@@ -43,6 +43,8 @@ namespace Snake {
         public event Action<Vector3> OnJump = delegate { };
         public event Action<Vector3> OnLand = delegate { };
         #endregion
+
+        public bool IsMoving => IsGrounded() && GetVelocity().magnitude >= 1f;
         
         bool IsGrounded() => stateMachine.CurrentState is GroundedState or SlidingState;
         public Vector3 GetVelocity() => savedVelocity;

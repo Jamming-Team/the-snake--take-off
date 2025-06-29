@@ -18808,6 +18808,37 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1543992400515402106, guid: 2f047f6298ecfb832a04ac1c846961c2, type: 3}
+--- !u!1 &2103197920
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2103197921}
+  m_Layer: 0
+  m_Name: Legs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2103197921
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103197920}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.844, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2147432770}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2104852353 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8436235548548723881, guid: 0feb22c0e561e3d54adbd5be4a7ac2bf, type: 3}
@@ -19315,6 +19346,7 @@ GameObject:
   - component: {fileID: 2147432777}
   - component: {fileID: 2147432776}
   - component: {fileID: 2147432778}
+  - component: {fileID: 2147432779}
   m_Layer: 0
   m_Name: Hero
   m_TagString: Player
@@ -19337,6 +19369,7 @@ Transform:
   m_Children:
   - {fileID: 373023639}
   - {fileID: 1458879095}
+  - {fileID: 2103197921}
   m_Father: {fileID: 1425876300}
   m_LocalEulerAnglesHint: {x: 0, y: 152.915, z: 0}
 --- !u!114 &2147432771
@@ -19471,6 +19504,127 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45af6e021b5424390e8e413297fa2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2147432779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2147432769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa598d6fe1f4af499ad320ef4777a18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _lSteps:
+    clips:
+    - {fileID: 8300000, guid: d98854438830c9d45a3108f4fd53ac0f, type: 3}
+    - {fileID: 8300000, guid: b3a43d8eae49ef54b8cbaaa0c441f6ba, type: 3}
+    - {fileID: 8300000, guid: 8811f99d597977864b4326730ab8c74e, type: 3}
+    - {fileID: 8300000, guid: 6f5de45c5f931511fbe66b732e2c7973, type: 3}
+    mixerGroup: {fileID: -1529733149770915992, guid: 21b6e9cffed4317f28eeb700ac500093, type: 2}
+    playOnAwake: 0
+    frequentSound: 0
+    mute: 0
+    bypassEffects: 0
+    bypassListenerEffects: 0
+    bypassReverbZones: 0
+    priority: 128
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 1
+    reverbZoneMix: 1
+    dopplerLevel: 1
+    spread: 0
+    minDistance: 1
+    maxDistance: 10
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    rolloffMode: 2
+    shouldPlayOnLoop: 0
+    objectToStick: {fileID: 0}
+  _rSteps:
+    clips:
+    - {fileID: 8300000, guid: 38045c48f7f53cc1e8d00889e6c49811, type: 3}
+    - {fileID: 8300000, guid: 487d6efb0af58d9b8afdaa12fcd0b1a7, type: 3}
+    - {fileID: 8300000, guid: fffa8c3f97bc6988c9216bff01d016d5, type: 3}
+    - {fileID: 8300000, guid: 416e06be2053395de99f8fa9cde64afc, type: 3}
+    mixerGroup: {fileID: -1529733149770915992, guid: 21b6e9cffed4317f28eeb700ac500093, type: 2}
+    playOnAwake: 0
+    frequentSound: 0
+    mute: 0
+    bypassEffects: 0
+    bypassListenerEffects: 0
+    bypassReverbZones: 0
+    priority: 128
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 1
+    reverbZoneMix: 1
+    dopplerLevel: 1
+    spread: 0
+    minDistance: 1
+    maxDistance: 10
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    rolloffMode: 2
+    shouldPlayOnLoop: 0
+    objectToStick: {fileID: 0}
+  _stepsInterval: 0.3
+  _jumpData:
+    clips:
+    - {fileID: 8300000, guid: 49cdf0dbbe0a8060c8043c3c7a04d87f, type: 3}
+    mixerGroup: {fileID: -1529733149770915992, guid: 21b6e9cffed4317f28eeb700ac500093, type: 2}
+    playOnAwake: 0
+    frequentSound: 0
+    mute: 0
+    bypassEffects: 0
+    bypassListenerEffects: 0
+    bypassReverbZones: 0
+    priority: 128
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 1
+    reverbZoneMix: 1
+    dopplerLevel: 1
+    spread: 0
+    minDistance: 1
+    maxDistance: 30
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    rolloffMode: 2
+    shouldPlayOnLoop: 0
+    objectToStick: {fileID: 0}
+  _landData:
+    clips:
+    - {fileID: 8300000, guid: 49cdf0dbbe0a8060c8043c3c7a04d87f, type: 3}
+    - {fileID: 8300000, guid: 49cdf0dbbe0a8060c8043c3c7a04d87f, type: 3}
+    mixerGroup: {fileID: -1529733149770915992, guid: 21b6e9cffed4317f28eeb700ac500093, type: 2}
+    playOnAwake: 0
+    frequentSound: 0
+    mute: 0
+    bypassEffects: 0
+    bypassListenerEffects: 0
+    bypassReverbZones: 0
+    priority: 128
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 1
+    reverbZoneMix: 1
+    dopplerLevel: 1
+    spread: 0
+    minDistance: 1
+    maxDistance: 15
+    ignoreListenerVolume: 0
+    ignoreListenerPause: 0
+    rolloffMode: 2
+    shouldPlayOnLoop: 0
+    objectToStick: {fileID: 0}
+  _legsTr: {fileID: 2103197921}
 --- !u!1001 &4883533597702099627
 PrefabInstance:
   m_ObjectHideFlags: 0
