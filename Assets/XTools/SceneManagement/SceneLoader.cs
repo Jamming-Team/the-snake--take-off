@@ -31,11 +31,16 @@ namespace XTools {
                 yield return new WaitUntil(() => !_view.inProgress);
             }
 
+            Debug.Log("Loading scene " + sceneName);
+            
             StartCoroutine(_model.LoadScene(sceneName));
 
             // yield return modelCor;
+            Debug.Log("1");
             yield return new WaitUntil(() => !_model.inProgress);
-            yield return new WaitForSeconds(0.2f);
+            Debug.Log("2");
+            // yield return new WaitForSeconds(0.2f);
+            Debug.Log("Finished loading scene " + sceneName);
 
             if (withAnims) _view.SetAnim(SceneLoaderV.LoadingAnims.Out);
 

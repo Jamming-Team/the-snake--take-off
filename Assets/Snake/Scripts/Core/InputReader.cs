@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using XTools;
 using static SnakeInputActions;
 
 namespace Snake {
@@ -63,7 +64,9 @@ namespace Snake {
         }
 
         public void OnPause(InputAction.CallbackContext context) {
-            // throw new NotImplementedException();
+            EventBus<UIButtonPressed>.Raise(new UIButtonPressed {
+                buttonType = UIButtonPressed.UIButtons.Pause,
+            });
         }
 
         public void OnTransit(InputAction.CallbackContext context) {
