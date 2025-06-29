@@ -25,17 +25,14 @@ namespace XTools {
 
             foreach (var scene in scenes) yield return SceneManager.UnloadSceneAsync(scene);
 
-            Debug.Log("Unloading scene " + sceneNameToLoad);
             
             // Optional: UnloadUnusedAssets - unloads all unused assets from memory
             GC.Collect();
             yield return Resources.UnloadUnusedAssets();
 
-            Debug.Log("Unloaded assets " + sceneNameToLoad);
             
             yield return SceneManager.LoadSceneAsync(sceneNameToLoad, LoadSceneMode.Additive);
 
-            Debug.Log("Loaded scene " + sceneNameToLoad);
             
             var activeScene = SceneManager.GetSceneByName(sceneNameToLoad);
 
@@ -43,7 +40,6 @@ namespace XTools {
             
             inProgress = false;
             
-            Debug.Log("Finished!!!!!!!!!!!!!! " + sceneNameToLoad);
         }
     }
 }

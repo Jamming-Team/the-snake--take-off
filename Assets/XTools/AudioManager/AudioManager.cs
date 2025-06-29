@@ -23,14 +23,14 @@ namespace XTools {
 
             AdjustMixerVolume();
 
-            // _musicModel = new MusicModel(_data.music,
-            //     new MusicModel.MusicSourcesPair { sourceOne = _musicSources[0], sourceTwo = _musicSources[1] });
+            _musicModel = new MusicModel(_data.music,
+                new MusicModel.MusicSourcesPair { sourceOne = _musicSources[0], sourceTwo = _musicSources[1] });
 
             // Subscribe the data event
 
             _initialized = true;
             
-            // PlayMusic(MusicBundleType.MainMenu, true);
+            PlayMusic(MusicBundleType.MainMenu, true);
             
             _dataChangedBinding = new EventBinding<DataChanged>(AdjustMixerVolume);
             EventBus<DataChanged>.Register(_dataChangedBinding);
@@ -43,7 +43,7 @@ namespace XTools {
         void Update() {
             if (!_initialized) return;
 
-            // _musicModel.CheckForCrossFade();
+            _musicModel.CheckForCrossFade();
         }
 
         // --- Interface ---
