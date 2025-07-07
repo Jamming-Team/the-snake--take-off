@@ -1,44 +1,40 @@
 using UnityEngine;
+using XTools;
 
 namespace Snake {
     public class RotationObject : MonoBehaviour {
-        
-        Camera _camera;
-        private Vector3 _lastCameraPosition;
+        InteractComponent _interactComponent;
 
-        void Start()
-        {
-            _camera = Camera.main;
-            UpdateRotation();
-        }
+        Vector3 _lastPosition;
 
-        void LateUpdate()
-        {
-            if (!IsCameraMoved()) return;
+        void Start() {
+            ServiceLocator.For(this).Get(out PlayerMediator mediator);
+            _interactComponent = mediator.interactComponent;
             
             UpdateRotation();
         }
 
-        void UpdateRotation()
-        {
+        void LateUpdate() {
+            if (!IsCameraMoved()) return;
+
+            UpdateRotation();
+        }
+
+        void UpdateRotation() {
             LookAtCamera();
             SetLastCameraPosition();
         }
 
-        private void LookAtCamera()
-        {
-            transform.LookAt(_camera.transform);
+        void LookAtCamera() {
+            transform.LookAt(_interactComponent.transform);
         }
 
-        private void SetLastCameraPosition()
-        {
-            _lastCameraPosition = _camera.transform.position;
+        void SetLastCameraPosition() {
+            _lastPosition = _interactComponent.transform.position;
         }
 
-        private bool IsCameraMoved()
-        {
-            return _lastCameraPosition != _camera.transform.position;
+        bool IsCameraMoved() {
+            return _lastPosition != _interactComponent.transform.position;
         }
-        
     }
 }

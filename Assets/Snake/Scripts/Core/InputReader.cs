@@ -50,6 +50,7 @@ namespace Snake {
             switch (context.phase) {
                 case InputActionPhase.Started:
                     Jump.Invoke(true);
+                    EventBus<JumpPressed>.Raise(new JumpPressed());
                     break;
                 case InputActionPhase.Canceled:
                     Jump.Invoke(false);
@@ -73,4 +74,6 @@ namespace Snake {
             Transit.Invoke();
         }
     }
+    
+    public struct JumpPressed : IEvent {}
 }
