@@ -31,14 +31,18 @@ namespace XTools {
                 yield return new WaitUntil(() => !_view.inProgress);
             }
 
+            _view.camera.SetActive(true);
+            
             StartCoroutine(_model.LoadScene(sceneName));
 
             // yield return modelCor;
             yield return new WaitUntil(() => !_model.inProgress);
-            yield return new WaitForSeconds(0.2f);
+            // yield return new WaitForSeconds(0.2f);
 
             if (withAnims) _view.SetAnim(SceneLoaderV.LoadingAnims.Out);
 
+            _view.camera.SetActive(false);
+            
             _isLoading = false;
         }
 

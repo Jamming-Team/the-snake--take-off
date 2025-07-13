@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 namespace XTools {
     public class ServiceLocator : MonoBehaviour {
+        public Action<Type> OnRegistered = delegate { };
+        public Action<Type> OnDeregistered = delegate { };
+        
         static ServiceLocator _global;
         static Dictionary<Scene, ServiceLocator> _sceneContainers;
 
@@ -91,11 +94,13 @@ namespace XTools {
 
         public ServiceLocator Register<T>(T service) {
             _services.Register(service);
+            OnRegistered.Invoke(service.GetType());
             return this;
         }
 
         public ServiceLocator Register(Type type, object service) {
             _services.Register(type, service);
+            OnRegistered.Invoke(service.GetType());
             return this;
         }
 

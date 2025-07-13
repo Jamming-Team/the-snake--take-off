@@ -13,7 +13,14 @@ MonoBehaviour:
   m_Name: GameDataSO
   m_EditorClassIdentifier: 
   audio:
-    musicVolume: 0.8
-    sfxVolume: 0.8
+    musicVolume: 0.25
+    sfxVolume: 0.6
     music:
+      bundles:
+        _serializedList:
+        - Key: 0
+          Value:
+            audioClips:
+            - {fileID: 8300000, guid: 18fd3cc1602895bc680e83f9dc31a509, type: 3}
+            shouldLoopFirstClip: 1
       crossFadeTime: 2

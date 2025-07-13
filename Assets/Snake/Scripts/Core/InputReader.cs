@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using XTools;
 using static SnakeInputActions;
 
 namespace Snake {
@@ -15,6 +16,8 @@ namespace Snake {
     public class InputReader : ScriptableObject, IInputReader, IGameplayActions {
         
         public event UnityAction<bool> Jump = delegate { };
+        public event UnityAction Interact = delegate { };
+        public event UnityAction Transit = delegate { };
         
         SnakeInputActions _inputActions;
         
@@ -47,6 +50,7 @@ namespace Snake {
             switch (context.phase) {
                 case InputActionPhase.Started:
                     Jump.Invoke(true);
+                    EventBus<JumpPressed>.Raise(new JumpPressed());
                     break;
                 case InputActionPhase.Canceled:
                     Jump.Invoke(false);
@@ -54,6 +58,22 @@ namespace Snake {
             }
         }
 
+        public void OnInteract(InputAction.CallbackContext context) {
+            if (context.started) {
+                Interact.Invoke();
+            }
+        }
 
+        public void OnPause(InputAction.CallbackContext context) {
+            EventBus<UIButtonPressed>.Raise(new UIButtonPressed {
+                buttonType = UIButtonPressed.UIButtons.Pause,
+            });
+        }
+
+        public void OnTransit(InputAction.CallbackContext context) {
+            Transit.Invoke();
+        }
     }
+    
+    public struct JumpPressed : IEvent {}
 }

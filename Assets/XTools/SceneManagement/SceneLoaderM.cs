@@ -25,17 +25,21 @@ namespace XTools {
 
             foreach (var scene in scenes) yield return SceneManager.UnloadSceneAsync(scene);
 
+            
             // Optional: UnloadUnusedAssets - unloads all unused assets from memory
             GC.Collect();
             yield return Resources.UnloadUnusedAssets();
 
+            
             yield return SceneManager.LoadSceneAsync(sceneNameToLoad, LoadSceneMode.Additive);
 
+            
             var activeScene = SceneManager.GetSceneByName(sceneNameToLoad);
 
             if (activeScene.IsValid()) SceneManager.SetActiveScene(activeScene);
             
             inProgress = false;
+            
         }
     }
 }

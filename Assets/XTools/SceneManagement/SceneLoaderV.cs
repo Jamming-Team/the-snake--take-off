@@ -10,6 +10,7 @@ namespace XTools {
 
         [SerializeField] Animator _animator;
         [SerializeField] GameObject _camera;
+        public GameObject camera => _camera;
         public bool inProgress { get; private set; }
 
         public void SetAnim(LoadingAnims anim) {

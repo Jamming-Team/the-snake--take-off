@@ -16,21 +16,25 @@ namespace XTools {
         bool _initialized = false;
         EventBinding<DataChanged> _dataChangedBinding;
 
+        void Awake() {
+            ServiceLocator.Global.Register(this);
+        }
 
         void Start() {
             ServiceLocator.For(this).Get(out IVisitorDataSupplier dataManager);
             dataManager.TrySupply(this);
+            
 
             AdjustMixerVolume();
 
-            // _musicModel = new MusicModel(_data.music,
-            //     new MusicModel.MusicSourcesPair { sourceOne = _musicSources[0], sourceTwo = _musicSources[1] });
+            _musicModel = new MusicModel(_data.music,
+                new MusicModel.MusicSourcesPair { sourceOne = _musicSources[0], sourceTwo = _musicSources[1] });
 
             // Subscribe the data event
 
             _initialized = true;
             
-            // PlayMusic(MusicBundleType.MainMenu, true);
+            PlayMusic(MusicBundleType.MainMenu, true);
             
             _dataChangedBinding = new EventBinding<DataChanged>(AdjustMixerVolume);
             EventBus<DataChanged>.Register(_dataChangedBinding);
@@ -43,7 +47,7 @@ namespace XTools {
         void Update() {
             if (!_initialized) return;
 
-            // _musicModel.CheckForCrossFade();
+            _musicModel.CheckForCrossFade();
         }
 
         // --- Interface ---
